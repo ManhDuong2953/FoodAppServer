@@ -107,9 +107,9 @@ export async function updateAvatar(req, res, next) {
         }
 
     } catch (error) {
-        res.status(200).json({ error: error });
+        console.error(error.message);
+        res.status(500).json({ error: error.message });
     }
-    next();
 }
 
 
