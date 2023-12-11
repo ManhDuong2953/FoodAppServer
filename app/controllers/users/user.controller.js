@@ -102,7 +102,6 @@ export async function updateAvatar(req, res, next) {
             const dataUploadURL = dataUploadCloud.url;
             const media = new Users.updateUserAvatarByID({ dataUploadURL, id });
             if (media) {
-
                 res.status(200).json({ success: true, message: "Thành công đăng avatar" });
             }
         }
@@ -110,7 +109,7 @@ export async function updateAvatar(req, res, next) {
             throw new Error;
         }
     } catch (error) {
-        res.status(200).json({ error: "Error saving media" });
+        res.status(200).json({ error: error });
     }
     next();
 }
