@@ -24,7 +24,7 @@ export default async function UploadCloudinary(file) {
         
         return result;
     } catch (error) {
-        console.error("Lỗi khi tải lên:", error);
+        console.error("Lỗi khi tải lên:", result);
         return error;
     }
 }
