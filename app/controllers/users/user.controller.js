@@ -1,5 +1,5 @@
 import Users from "../../models/users/user.model";
-
+import UploadCloudinary from "../../../configs/cloud/cloudinary.config";
 // Chú ý: không sử dụng từ khóa "async" trực tiếp trước từ khóa "export"
 export const userLogin = async (req, res) => {
     try {
@@ -34,7 +34,7 @@ export const userSignup = async (req, res) => {
                 phone_number: req.body.phone_number,
                 address: req.body.address,
                 password: req.body.password,
-                avatar_thumbnail: "https://static.vecteezy.com/system/resources/previews/000/425/647/original/avatar-icon-vector-illustration.jpg",
+                avatar_thumbnail: "https://cdn-icons-png.flaticon.com/512/186/186313.png",
             });
 
             res.status(200).json({ success: true, message: "Đăng ký thành công" });
@@ -52,9 +52,9 @@ export const getUserByID = async (req, res) => {
         const infoUser = await Users.findUserByID(req.params.id);
 
         if (infoUser) {
-            res.status(200).json({ success: true, data: infoUser});
+            res.status(200).json({ success: true, data: infoUser });
         } else {
-            
+
             res.status(400).json({ success: false, data: "Không tìm thấy người dùng nào phù hợp" });
         }
     } catch (error) {
@@ -62,3 +62,59 @@ export const getUserByID = async (req, res) => {
         res.status(500).json({ success: false, message: "Lỗi server." });
     }
 };
+
+
+
+
+
+export const postUpdateUserInfo = async (req, res) => {
+    try {
+        const updateInfo = await Users.updateUserByID({
+            name: req.body.name,
+            phone_number: req.body.phone_number,
+            address: req.body.address,
+            password: req.body.password,
+            id: req.body.id,
+        });
+
+        console.log(req.file);
+        if (updateInfo) {
+            res.status(200).json({ success: true, message: "Cập nhật thành công" });
+        } else {
+            res.status(400).json({ success: false, message: "Lỗi bất định! Thông tin chưa được cập nhật" });
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ success: false, message: "Lỗi server." });
+    }
+};
+
+
+
+
+export async function updateAvatar(req, res, next) {
+    const dataFile = req.file;
+    const id = req.params.id_user;
+    console.log(id);
+    try {
+        if (dataFile && id) {
+            const dataUploadCloud = await UploadCloudinary(dataFile);
+            const dataUploadURL = dataUploadCloud.url;
+            const media = new Users.updateUserAvatarByID({ dataUploadURL, id });
+            if (media) {
+
+                res.status(200).json({ success: true, message: "Thành công đăng avatar" });
+            }
+        }
+        else {
+            throw new Error;
+        }
+    } catch (error) {
+        res.status(200).json({ error: "Error saving media" });
+    }
+    next();
+}
+
+
+
+

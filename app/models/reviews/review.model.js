@@ -2,7 +2,7 @@ import pool from "../../../configs/database/database.config";
 class Reviews {
     static listReviews = async (id) => {
         try {
-            const sql = "SELECT u.name, u.avatar_thumbnail, r.reviews_datetime, r.rate, r.comment FROM reviews AS r INNER JOIN users AS u ON r.user_id = u.id WHERE r.food_id = ?;";
+            const sql = "SELECT r.*, u.name ,  u.avatar_thumbnail FROM reviews AS r INNER JOIN users AS u ON r.user_id = u.id WHERE r.food_id = ?;";
             const [result] = await pool.query(sql, [id]);
             if (result.length > 0) {
                 return result;
@@ -16,7 +16,7 @@ class Reviews {
 
     static uploadReviews = async (params) => {
         try {
-            const sql = "INSERT INTO Reviews (food_id, user_id, comment, rate) VALUES (?,?,?,?);";
+            const sql = "INSERT INTO reviews (food_id, user_id, comment, rate) VALUES (?,?,?,?);";
             await pool.query(sql, [params.food_id, params.user_id, params.comment, params.rate]);
             return true;
             

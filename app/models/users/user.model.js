@@ -21,7 +21,7 @@ class Users {
 
     static async checkLogin({ phone_number, password }) {
         try {
-            const query = "SELECT * FROM Users WHERE phone_number = ? AND password = ?";
+            const query = "SELECT * FROM users WHERE phone_number = ? AND password = ?";
             const [result] = await pool.execute(query, [phone_number, password]);
             if (result.length > 0) {
                 return result[0];
@@ -54,7 +54,7 @@ class Users {
 
     static async findUserByID(id) {
         try {
-            const query = "SELECT * FROM Users WHERE id = ?";
+            const query = "SELECT * FROM users WHERE id = ?";
             const [result] = await pool.execute(query, [id]);
             if (result.length > 0) {
                 // Nếu có kết quả, trả về thông tin người dùng
@@ -63,6 +63,29 @@ class Users {
                 // Nếu không có kết quả, thông báo lỗi
                 return false;
             }
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
+
+    static async updateUserByID(params) {
+        try {
+            const query = "UPDATE users SET name = ?, phone_number = ?, address = ?, password = ? WHERE id = ?";
+            await pool.execute(query, [params.name, params.phone_number, params.address, params.password, params.id]);
+            return true;
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
+
+    static async updateUserAvatarByID(params) {
+        console.log(params);
+        try {
+            const query = "UPDATE users SET avatar_thumbnail = ? WHERE id = ?";
+            await pool.execute(query, [params.dataUploadURL, params.id]);
+            return true;
         } catch (error) {
             console.error(error.message);
             return null;
