@@ -12,7 +12,7 @@ class Notices {
 
     static getNotice = async (id) => {
         try {
-            const noticeSql = "SELECT * FROM notices WHERE user_id = ?";
+            const noticeSql = "SELECT * FROM notices WHERE user_id = ? ORDER BY notices_datetime DESC";
             const [result] = await pool.query(noticeSql, [id]);
             return result;
         } catch (error) {
